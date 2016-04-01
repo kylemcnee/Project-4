@@ -19,8 +19,8 @@
         android:textSize="50sp"
         android:textColor="#b71c1c"
         android:layout_centerHorizontal="true"/>
-    <ListView
-        android:id="@+id/kill_listview"
+    <EditText
+        android:id="@+id/target_edittext"
         android:layout_below="@id/title_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
