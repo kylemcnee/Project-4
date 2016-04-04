@@ -3,6 +3,7 @@ package com.example.kylemcnee.headshot;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.MediaStore;
@@ -14,9 +15,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -35,6 +41,9 @@ public class HuntingActivity extends AppCompatActivity {
     TextView mHeadline;
     ImageButton mCrosshair;
     final static int REQUEST_HEADSHOT_CAPTURE = 1;
+    JSONObject jsonObject;
+    JSONArray jsonArray;
+    boolean preyEliminated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,13 +102,20 @@ public class HuntingActivity extends AppCompatActivity {
                 stream = conn.getInputStream();
 
                 OutputStream os = conn.getOutputStream();
-                //    {"url":"http://i.imgur.com/v1WGb0K.jpg","gallery_name":"test","subject_id":"kyle"}
+                //    {"url":"http://i.imgur.com/v1WGb0K.jpg","gallery_name":"test"}
                 //TODO what do we call the first param?
-                //String JSONbody = "{\"base64\":"+"\""+encodedImage+"\","+"\"gallery_name\":"+"\""+TARGET_NAME+"\","+"\"subject_id\":"+"\""+TARGET_NAME+"\"}";
-               // byte[] byteArray = JSONbody.getBytes();
+                String JSONbody = "{\"url\":"+"\""+encodedImage+"\","+"\"gallery_name\":"+"\""+TARGET_NAME+"\"}";
+                byte[] byteArray = JSONbody.getBytes();
                 os.write(byteArray);
                 os.flush();
                 os.close();
+
+                //TODO is this gonna work?
+                String jsonAsString = decodeJSON(stream);
+                if (jsonAsString.contains("success")){
+                    preyEliminated = true;
+                }
+
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }finally {
@@ -110,6 +126,7 @@ public class HuntingActivity extends AppCompatActivity {
         }else{
             Toast.makeText(HuntingActivity.this, "Please check network connection", Toast.LENGTH_LONG).show();
         }
+
 
     }
 
@@ -138,7 +155,7 @@ public class HuntingActivity extends AppCompatActivity {
                 OutputStream os = connection.getOutputStream();
             //    {"url":"http://i.imgur.com/v1WGb0K.jpg","gallery_name":"test","subject_id":"kyle"}
                 //TODO what do we call the first param?
-                String JSONbody = "{\"base64\":"+"\""+encodedImage+"\","+"\"gallery_name\":"+"\""+TARGET_NAME+"\","+"\"subject_id\":"+"\""+TARGET_NAME+"\"}";
+                String JSONbody = "{\"url\":"+"\""+encodedImage+"\","+"\"gallery_name\":"+"\""+TARGET_NAME+"\","+"\"subject_id\":"+"\""+TARGET_NAME+"\"}";
                 byte[] byteArray = JSONbody.getBytes();
                 os.write(byteArray);
                 os.flush();
@@ -168,11 +185,34 @@ public class HuntingActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_HEADSHOT_CAPTURE && resultCode == RESULT_OK){
-            Bitmap headshot = (Bitmap) data.getExtras().get("data");
-            encodeImage(headshot);
+            HEADSHOT_IMAGE = (Bitmap) data.getExtras().get("data");
+            try {
+                recognizeFace(BASE_URL_RECOGNIZE, encodeImage(HEADSHOT_IMAGE));
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (preyEliminated){
+                Toast.makeText(HuntingActivity.this, "PREY SLAUGHTERED", Toast.LENGTH_LONG).show();
+                mPreyName.setPaintFlags(mPreyName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }else{
+                Toast.makeText(HuntingActivity.this, "SHOT MISSED!", Toast.LENGTH_SHORT).show();
+            }
 
         }
 
+    }
+
+    public String decodeJSON(InputStream stream) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+        String stringData;
+
+        while ((stringData = br.readLine()) != null){
+            sb.append(stringData);
+        }
+        return sb.toString();
     }
 
     public String encodeImage(Bitmap bitmap){
