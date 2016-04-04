@@ -45,11 +45,13 @@ public class KillList extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Retrieves the bitmap of the photo taken by the user, then launches the Hunting Activity
+
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK){
             Bitmap photo = (Bitmap)data.getExtras().get("data");
             Intent i = new Intent(KillList.this, HuntingActivity.class);
             i.putExtra("enroll_bitmap", photo);
             i.putExtra("target_name", mTarget.getText().toString());
+            startActivity(i);
         }
     }
 }

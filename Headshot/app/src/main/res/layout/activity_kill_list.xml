@@ -21,14 +21,17 @@
         android:layout_centerHorizontal="true"/>
     <EditText
         android:id="@+id/target_edittext"
+        android:hint="ENTER TARGET NAME HERE"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#b71c1c"
         android:layout_centerInParent="true"
         android:layout_width="match_parent"
-        android:hint="ENTER TARGET NAME HERE"
         android:layout_height="wrap_content" />
     <Button
         android:id="@+id/register_button"
         android:text="REGISTER TARGET"
         android:layout_below="@id/target_edittext"
+        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
