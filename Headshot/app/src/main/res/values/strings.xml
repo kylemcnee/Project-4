@@ -2,6 +2,6 @@
     <string name="app_name">HeadShot</string>
     <string name="APP_ID">8569521d</string>
     <string name="API_KEY">87ca62a889d69a2b3749f8ec464c112d</string>
-    <string name="BASE_URL">api.kairos.com</string>
+    <string name="BASE_URL_ENROLL">api.kairos.com/enroll</string>
     <string name="CONTENT_TYPE">application/json</string>
 </resources>

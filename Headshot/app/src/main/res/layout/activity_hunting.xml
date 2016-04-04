@@ -7,6 +7,25 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#000000"
     tools:context="com.example.kylemcnee.headshot.HuntingActivity">
+
+    <TextView
+        android:id="@+id/target_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HeadShot!"
+        android:textSize="50sp"
+        android:textColor="#b71c1c"
+        android:layout_centerInParent="true"/>
+
+    <ImageButton
+        android:id="@+id/crosshair"
+        android:src="@drawable/crosshair"
+        android:background="@null"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>
