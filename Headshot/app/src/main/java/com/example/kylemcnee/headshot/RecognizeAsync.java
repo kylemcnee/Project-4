@@ -30,6 +30,7 @@ public class RecognizeAsync extends AsyncTask <String, Void, Void> {
     String mEncodedBitmap;
     String mTargetName;
     boolean preyEliminated = false;
+    String jsonAsString;
 
     public RecognizeAsync (Context context, String encodedBitmap, String targetName){
         mContext = context;
@@ -76,7 +77,7 @@ public class RecognizeAsync extends AsyncTask <String, Void, Void> {
                 os.close();
 
                 //TODO is this gonna work?
-                String jsonAsString = decodeJSON(stream);
+                jsonAsString = decodeJSON(stream);
                 Log.d("RESPONSE", jsonAsString);
                 if (jsonAsString.contains("success")){
                     preyEliminated = true;
